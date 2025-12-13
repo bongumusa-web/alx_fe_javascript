@@ -32,13 +32,13 @@ return;
 }
 
 
-const newQuote = {
+const createAddQuoteForm = {
 text: quoteText,
 category: quoteCategory
 };
 
 
-quotes.push(newQuote);
+quotes.push(createAddQuoteForm);
 
 
 document.getElementById("newQuoteText").value = "";
