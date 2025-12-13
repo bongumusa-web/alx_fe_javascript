@@ -59,11 +59,22 @@
             margin: 5px auto;
             
         }
+
+        #categoryFilter{
+          margin: 5px;
+          padding: 8px 15px;
+          font-size: 14px;
+          font-weight: 600;
+        }
     </style>
 
   </head>
   <body>
     <h1>Dynamic Quote Generator</h1>
+    <select id="categoryFilter" onchange="filterQuotes()">
+  <option value="all">All Categories</option>
+</select>
+
     <div id="quoteDisplay"></div>
     <button id="newQuote">Show New Quote</button>
 
@@ -71,6 +82,7 @@
 
 
     <h2>Add a new qoute</h2>
+  
     <div class="addQuotes">
        <input id="newQuoteText" type="text" placeholder="Enter a new quote" /> <br>
        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />

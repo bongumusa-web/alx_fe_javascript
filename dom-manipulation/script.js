@@ -1,5 +1,7 @@
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuote = document.getElementById("newQuote");
+const categoryFilter = document.getElementById("categoryFilter");
+
 
 let qoutes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
@@ -117,5 +119,77 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
+
+
+// filtering with catergory 
+
+function populateCategories(){
+  categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
+  const catergories = [];
+  qoutes.forEach(qoute => {
+    if (!catergories.includes(qoute.category)){
+      catergories.push(qoute.category);
+    }
+
+  });
+
+
+
+  catergories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.innerHTML = category;
+    categoryFilter.appendChild(option);
+
+  });
+}
+
+
+
+function filterQuotes() {
+  const selectedCategory = categoryFilter.value;
+
+  localStorage.setItem("selectedCategory", selectedCategory);
+
+  quoteDisplay.innerHTML = "";
+
+  // change height based on selected category
+if (selectedCategory === "Motivation" || selectedCategory === "Programming") {
+ quoteDisplay.style.height = "300px";
+  quoteDisplay.style.overflow = "hidden";
+  quoteDisplay.style.transition = "height 0.4s ease";
+} else {
+  quoteDisplay.style.height = "100px";
+}
+
+
+  const filteredQuotes =
+    selectedCategory === "all"
+      ? qoutes
+      : qoutes.filter(qoute => qoute.category === selectedCategory);
+
+  filteredQuotes.forEach(qoute => {
+    const quoteText = document.createElement("p");
+    quoteText.textContent = `"${qoute.text}" — ${qoute.category}`;
+    quoteDisplay.appendChild(quoteText);
+  });
+}
+// storing category on the local storeage 
+
+function loadSelectedCategory() {
+  const savedCategory = localStorage.getItem("selectedCategory");
+
+  if (savedCategory) {
+    categoryFilter.value = savedCategory;
+    filterQuotes();
+  }
+}
+
+
+
+
 // calling the qoute
 loadQoutes();
+populateCategories();
+loadSelectedCategory();
+
