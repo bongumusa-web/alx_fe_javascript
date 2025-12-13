@@ -123,26 +123,25 @@ function importFromJsonFile(event) {
 
 // filtering with catergory 
 
-function populateCategories(){
+function populateCategories() {
   categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
-  const catergories = [];
-  qoutes.forEach(qoute => {
-    if (!catergories.includes(qoute.category)){
-      catergories.push(qoute.category);
-    }
 
-  });
+  const categories = qoutes
+    .map(qoute => qoute.category)
+    .filter((category, index, array) => array.indexOf(category) === index);
 
-
-
-  catergories.forEach(category => {
+  categories.forEach(category => {
     const option = document.createElement("option");
     option.value = category;
-    option.innerHTML = category;
+    option.textContent = category;
     categoryFilter.appendChild(option);
-
   });
 }
+
+
+
+
+
 
 
 
