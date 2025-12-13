@@ -1,15 +1,17 @@
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuote = document.getElementById("newQuote");
 
-const quotes = [
+let qoutes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Don’t let yesterday take up too much of today.", category: "Motivation" },
   { text: "JavaScript is the language of the web.", category: "Programming" }
 ];
 
 function showRandomQuote() {
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const quote = quotes[randomIndex];
+  const randomIndex = Math.floor(Math.random() * qoutes.length);
+
+  
+  const quote = qoutes[randomIndex];
 
   quoteDisplay.innerHTML = "";
 
@@ -21,6 +23,8 @@ function showRandomQuote() {
 
   quoteDisplay.appendChild(quoteText);
   quoteDisplay.appendChild(quoteCategory);
+
+  sessionStorage.setItem("lastQuote", JSON.stringify(quote));
 }
 
 newQuote.addEventListener("click", showRandomQuote);
@@ -39,10 +43,79 @@ function addQuote() {
     category: quoteCategory
   };
 
-  quotes.push(createAddQuoteForm);
+  qoutes.push(createAddQuoteForm);
+
+
+  saveQoute();
 
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
 
   alert("Quote added successfully!");
 }
+
+// local storage for saving qoute
+function saveQoute() {
+  
+  localStorage.setItem("qoutes", JSON.stringify(qoutes));
+}
+
+// load qoute from local storage
+function loadQoutes() {
+  
+  const storedQuote = localStorage.getItem("qoutes");
+
+  if (storedQuote) {
+    qoutes = JSON.parse(storedQuote);
+  } else {
+    qoutes = [
+      {
+        text: "The best way to get started is to quit talking and begin doing.",
+        category: "Motivation"
+      },
+      {
+        text: "Don’t let yesterday take up too much of today.",
+        category: "Motivation"
+      },
+      {
+        text: "JavaScript is the language of the web.",
+        category: "Programming"
+      }
+    ];
+    saveQoute();
+  }
+}
+
+// exporting the qoute to JSON
+function exportQuotes() {
+  const data = JSON.stringify(qoutes, null, 2);
+
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+// reading the file and changing JSON to JavaScript
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+
+  fileReader.onload = function(event) {
+    const importedQuotes = JSON.parse(event.target.result);
+
+    qoutes.push(...importedQuotes);
+    saveQoute();
+
+    alert("Quotes imported successfully!");
+  };
+
+  fileReader.readAsText(event.target.files[0]);
+}
+
+// calling the qoute
+loadQoutes();
