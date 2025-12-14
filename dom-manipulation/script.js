@@ -194,7 +194,7 @@ async function syncQuotes() {
   populateCategories();
   filterQuotes();
 
-  notifyUser("Quotes synced with server. Server data was used.");
+  notifyUser("Quotes synced with server!.");
 }
 
 function notifyUser(message){
