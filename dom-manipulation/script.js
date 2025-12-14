@@ -139,13 +139,11 @@ function filterQuotes() {
 
   quoteDisplay.innerHTML = "";
 
-  if (selectedCategory === "Motivation" || selectedCategory === "Programming") {
-    quoteDisplay.style.height = "300px";
+  if (selectedCategory === "Server" || selectedCategory === "Programming") {
+    quoteDisplay.style.height = "450px";
     quoteDisplay.style.overflow = "hidden";
     quoteDisplay.style.transition = "height 0.4s ease";
-  } else {
-    quoteDisplay.style.height = "100px";
-  }
+  } 
 
   const filteredQuotes =
     selectedCategory === "all"
