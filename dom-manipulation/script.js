@@ -3,17 +3,17 @@ const newQuote = document.getElementById("newQuote");
 const categoryFilter = document.getElementById("categoryFilter");
 
 
-let qoutes = [
+let quotes = [
   { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
   { text: "Don’t let yesterday take up too much of today.", category: "Motivation" },
   { text: "JavaScript is the language of the web.", category: "Programming" }
 ];
 
 function showRandomQuote() {
-  const randomIndex = Math.floor(Math.random() * qoutes.length);
+  const randomIndex = Math.floor(Math.random() * quotes.length);
 
   
-  const quote = qoutes[randomIndex];
+  const quote = quotes[randomIndex];
 
   quoteDisplay.innerHTML = "";
 
@@ -45,10 +45,10 @@ function addQuote() {
     category: quoteCategory
   };
 
-  qoutes.push(createAddQuoteForm);
+  quotes.push(createAddQuoteForm);
 
 
-  saveQoute();
+  saveQuote();
 
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
@@ -57,20 +57,20 @@ function addQuote() {
 }
 
 // local storage for saving qoute
-function saveQoute() {
+function saveQuote() {
   
   localStorage.setItem("qoutes", JSON.stringify(qoutes));
 }
 
 // load qoute from local storage
-function loadQoutes() {
+function loadQuotes() {
   
   const storedQuote = localStorage.getItem("qoutes");
 
   if (storedQuote) {
-    qoutes = JSON.parse(storedQuote);
+    quotes = JSON.parse(storedQuote);
   } else {
-    qoutes = [
+    quotes = [
       {
         text: "The best way to get started is to quit talking and begin doing.",
         category: "Motivation"
@@ -84,7 +84,7 @@ function loadQoutes() {
         category: "Programming"
       }
     ];
-    saveQoute();
+    saveQuote();
   }
 }
 
@@ -110,8 +110,8 @@ function importFromJsonFile(event) {
   fileReader.onload = function(event) {
     const importedQuotes = JSON.parse(event.target.result);
 
-    qoutes.push(...importedQuotes);
-    saveQoute();
+    quotes.push(...importedQuotes);
+    saveQuote();
 
     alert("Quotes imported successfully!");
   };
@@ -126,7 +126,7 @@ function importFromJsonFile(event) {
 function populateCategories() {
   categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
 
-  const categories = qoutes
+  const categories = quotes
     .map(qoute => qoute.category)
     .filter((category, index, array) => array.indexOf(category) === index);
 
@@ -164,8 +164,8 @@ if (selectedCategory === "Motivation" || selectedCategory === "Programming") {
 
   const filteredQuotes =
     selectedCategory === "all"
-      ? qoutes
-      : qoutes.filter(qoute => qoute.category === selectedCategory);
+      ? quotes
+      : quotes.filter(qoute => qoute.category === selectedCategory);
 
   filteredQuotes.forEach(qoute => {
     const quoteText = document.createElement("p");
@@ -186,9 +186,54 @@ function loadSelectedCategory() {
 
 
 
+//syc data using JSON PLACEHOLDER 
+
+  async function fetchQuotesFromServer() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const data = await response.json();
+
+  // Convert server posts into quotes
+  const serverQuotes = data.slice(0, 5).map(post => ({
+    text: post.title,
+    category: "Server"
+  }));
+
+  return serverQuotes;
+}
+
+function notifyUser(message){
+  const notification = document.getElementById('notification');
+  notification.innerHTML = message;
+
+  setTimeout(() => {
+    notification.innerHTML = "";
+  }, 3000);
+
+}
+
+ async function syncWithServer() {
+  const serverQuotes = await fetchQuotesFromServer();
+  const loadQuotes = quotes;
+
+  // conflict rule to make sure that the server wins 
+
+  quotes = serverQuotes;
+
+  saveQuote();
+  populateCategories();
+  filterQuotes();
+
+  notifyUser("Quotes synced with server (server data used)");
+ }
+
+
+
+
 
 // calling the qoute
-loadQoutes();
+loadQuotes();
 populateCategories();
 loadSelectedCategory();
+setInterval(syncWithServer, 15000);
+
 

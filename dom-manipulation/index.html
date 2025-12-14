@@ -66,11 +66,22 @@
           font-size: 14px;
           font-weight: 600;
         }
+
+   #notification {
+    color: green;
+    font-weight: bold;
+    margin: 10px;
+
+   }
+  
+
     </style>
 
   </head>
   <body>
     <h1>Dynamic Quote Generator</h1>
+    <div id="notification"></div>
+
     <select id="categoryFilter" onchange="filterQuotes()">
   <option value="all">All Categories</option>
 </select>
@@ -93,6 +104,7 @@
 
 
     <button onclick="exportQuotes()">Export Quotes (JSON)</button>
+     <button onclick="syncWithServer()">Sync With Server</button>
 
     <script src="script.js"></script>
   </body>
